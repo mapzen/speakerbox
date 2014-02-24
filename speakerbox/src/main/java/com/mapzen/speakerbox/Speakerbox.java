@@ -1,4 +1,18 @@
 package com.mapzen.speakerbox;
 
-public class Speakerbox {
+import android.content.Context;
+import android.speech.tts.TextToSpeech;
+
+public class Speakerbox implements TextToSpeech.OnInitListener {
+    final Context context;
+    final TextToSpeech textToSpeech;
+
+    public Speakerbox(Context context) {
+        this.context = context;
+        this.textToSpeech = new TextToSpeech(context, this);
+    }
+
+    @Override
+    public void onInit(int i) {
+    }
 }
