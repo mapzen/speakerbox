@@ -1,10 +1,10 @@
 package com.example.speakerbox;
 
+import com.mapzen.speakerbox.Speakerbox;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +25,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static class SpeakerboxFragment extends Fragment
-            implements TextToSpeech.OnInitListener {
-
-        private TextToSpeech textToSpeech;
+    public static class SpeakerboxFragment extends Fragment {
+        private Speakerbox speakerbox;
         private TextView textView;
         private Button button;
 
@@ -44,20 +42,13 @@ public class MainActivity extends Activity {
                     speak();
                 }
             });
-            textToSpeech = new TextToSpeech(getActivity(), this);
-            textToSpeech.speak(textView.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+
+            speakerbox = new Speakerbox(getActivity());
             return view;
         }
 
-        @Override
-        public void onInit(int status) {
-        }
-
         private void speak() {
-            String textToSpeak = textView.getText().toString();
-            if (!TextUtils.isEmpty(textToSpeak)) {
-                textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null);
-            }
+            speakerbox.play(textView.getText().toString());
         }
     }
 }
