@@ -1,5 +1,6 @@
 package com.mapzen.speakerbox;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -9,17 +10,29 @@ import static org.robolectric.Robolectric.application;
 
 @RunWith(SpeakerboxTestRunner.class)
 public class SpeakerboxTest {
+    private Speakerbox speakerbox;
+
+    @Before
+    public void setUp() throws Exception {
+        speakerbox = new Speakerbox(application);
+    }
+
     @Test
     public void shouldNotBeNull() throws Exception {
-        Speakerbox speakerbox = new Speakerbox(application);
         assertThat(speakerbox).isNotNull();
     }
 
     @Test
     public void shouldInitTextToSpeech() throws Exception {
-        Speakerbox speakerbox = new Speakerbox(application);
         ShadowTextToSpeech shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
         assertThat(shadowTextToSpeech.getContext()).isEqualTo(application);
         assertThat(shadowTextToSpeech.getOnInitListener()).isEqualTo(speakerbox);
+    }
+
+    @Test
+    public void shouldSpeakText() throws Exception {
+        speakerbox.play("text");
+        ShadowTextToSpeech shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("text");
     }
 }

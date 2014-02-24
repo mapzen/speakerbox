@@ -15,4 +15,8 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int i) {
     }
+
+    public void play(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 }
