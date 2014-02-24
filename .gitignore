@@ -9,6 +9,7 @@ out/
 .idea/
 *.iml
 classes
+gen/
 
 # Mac
 .DS_Store
@@ -17,4 +18,3 @@ classes
 tmp/
 *.*~
 *.apk
-com_crashlytics_export_strings.xml
