@@ -14,6 +14,7 @@ public class ShadowTextToSpeech {
     private Context context;
     private TextToSpeech.OnInitListener listener;
     private String lastSpokenText;
+    private boolean shutdown = false;
 
     public void __constructor__(Context context, TextToSpeech.OnInitListener listener) {
         this.context = context;
@@ -36,5 +37,14 @@ public class ShadowTextToSpeech {
 
     public String getLastSpokenText() {
         return lastSpokenText;
+    }
+
+    @Implementation
+    public void shutdown() {
+        shutdown = true;
+    }
+
+    public boolean isShutdown() {
+        return shutdown;
     }
 }

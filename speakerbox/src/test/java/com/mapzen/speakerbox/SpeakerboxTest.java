@@ -6,8 +6,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import android.app.Activity;
+import android.app.Application;
+
+import java.util.ArrayList;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.reflect.core.Reflection.field;
+import static org.robolectric.Robolectric.application;
 
 @RunWith(SpeakerboxTestRunner.class)
 public class SpeakerboxTest {
@@ -37,5 +42,25 @@ public class SpeakerboxTest {
     public void shouldSpeakText() throws Exception {
         speakerbox.play("Hello");
         assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
+    }
+
+    @Test
+    public void shouldShutdownTextToSpeechOnActivityDestroyed() throws Exception {
+        speakerbox.callbacks.onActivityDestroyed(activity);
+        assertThat(shadowTextToSpeech.isShutdown()).isTrue();
+    }
+
+    @Test
+    public void shouldNotShutdownTextToSpeechOnAnotherActivityDestroyed() throws Exception {
+        speakerbox.callbacks.onActivityDestroyed(new Activity());
+        assertThat(shadowTextToSpeech.isShutdown()).isFalse();
+    }
+
+    @Test
+    public void shouldUnregisterLifecycleCallbacksOnActivityDestroyed() throws Exception {
+        speakerbox.callbacks.onActivityDestroyed(activity);
+        ArrayList<Application.ActivityLifecycleCallbacks> callbackList =
+                field("mActivityLifecycleCallbacks").ofType(ArrayList.class).in(application).get();
+        assertThat(callbackList).isEmpty();
     }
 }

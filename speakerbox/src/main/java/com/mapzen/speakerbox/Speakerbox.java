@@ -1,15 +1,55 @@
 package com.mapzen.speakerbox;
 
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final Activity activity;
     final TextToSpeech textToSpeech;
+    final Application.ActivityLifecycleCallbacks callbacks;
 
     public Speakerbox(Activity activity) {
         this.activity = activity;
         this.textToSpeech = new TextToSpeech(activity, this);
+
+        final Application application = (Application) activity.getApplicationContext();
+        this.callbacks = new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                if (Speakerbox.this.activity == activity) {
+                    textToSpeech.shutdown();
+                    application.unregisterActivityLifecycleCallbacks(this);
+                }
+            }
+        };
+
+        application.registerActivityLifecycleCallbacks(callbacks);
     }
 
     @Override
