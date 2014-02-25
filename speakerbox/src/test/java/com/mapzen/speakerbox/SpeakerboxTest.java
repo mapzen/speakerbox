@@ -63,4 +63,28 @@ public class SpeakerboxTest {
                 field("mActivityLifecycleCallbacks").ofType(ArrayList.class).in(application).get();
         assertThat(callbackList).isEmpty();
     }
+
+    @Test
+    public void shouldNotPlayWhenMuted() throws Exception {
+        speakerbox.mute();
+        speakerbox.play("Hello");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isNull();
+    }
+
+    @Test
+    public void shouldPlayAfterUnmute() throws Exception {
+        speakerbox.mute();
+        speakerbox.unmute();
+        speakerbox.play("Hello");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
+    }
+
+    @Test
+    public void shouldReturnMuteState() throws Exception {
+        speakerbox.mute();
+        assertThat(speakerbox.isMuted()).isTrue();
+
+        speakerbox.unmute();
+        assertThat(speakerbox.isMuted()).isFalse();
+    }
 }

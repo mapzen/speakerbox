@@ -10,6 +10,8 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     final TextToSpeech textToSpeech;
     final Application.ActivityLifecycleCallbacks callbacks;
 
+    private boolean muted = false;
+
     public Speakerbox(Activity activity) {
         this.activity = activity;
         this.textToSpeech = new TextToSpeech(activity, this);
@@ -57,6 +59,20 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        if (!muted) {
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    public void mute() {
+        muted = true;
+    }
+
+    public void unmute() {
+        muted = false;
+    }
+
+    public boolean isMuted() {
+        return muted;
     }
 }
