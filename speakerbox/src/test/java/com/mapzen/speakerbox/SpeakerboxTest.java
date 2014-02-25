@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowLog;
 
 import android.app.Activity;
+import android.speech.tts.TextToSpeech;
 
 import java.util.ArrayList;
 
@@ -95,5 +97,12 @@ public class SpeakerboxTest {
 
         speakerbox.unmute();
         assertThat(speakerbox.isMuted()).isFalse();
+    }
+
+    @Test
+    public void shouldLogInitializationError() throws Exception {
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.ERROR);
+        assertThat(ShadowLog.getLogs().get(0).tag).isEqualTo(Speakerbox.TAG);
+        assertThat(ShadowLog.getLogs().get(0).msg).isEqualTo("Initialization failed.");
     }
 }

@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
+    final static String TAG = Speakerbox.class.getSimpleName();
+
     final Activity activity;
     final TextToSpeech textToSpeech;
     final Application.ActivityLifecycleCallbacks callbacks;
@@ -55,7 +58,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     @Override
-    public void onInit(int i) {
+    public void onInit(int status) {
+        if (status == TextToSpeech.ERROR) {
+            Log.e(TAG, "Initialization failed.");
+        }
     }
 
     public void play(CharSequence text) {
