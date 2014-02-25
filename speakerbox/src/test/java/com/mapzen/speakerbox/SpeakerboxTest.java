@@ -5,16 +5,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import android.app.Activity;
+
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.robolectric.Robolectric.application;
 
 @RunWith(SpeakerboxTestRunner.class)
 public class SpeakerboxTest {
+    private Activity activity;
     private Speakerbox speakerbox;
+    private ShadowTextToSpeech shadowTextToSpeech;
 
     @Before
     public void setUp() throws Exception {
-        speakerbox = new Speakerbox(application);
+        activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
+        speakerbox = new Speakerbox(activity);
+        shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
     }
 
     @Test
@@ -24,15 +29,13 @@ public class SpeakerboxTest {
 
     @Test
     public void shouldInitTextToSpeech() throws Exception {
-        ShadowTextToSpeech shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
-        assertThat(shadowTextToSpeech.getContext()).isEqualTo(application);
+        assertThat(shadowTextToSpeech.getContext()).isEqualTo(activity);
         assertThat(shadowTextToSpeech.getOnInitListener()).isEqualTo(speakerbox);
     }
 
     @Test
     public void shouldSpeakText() throws Exception {
-        speakerbox.play("text");
-        ShadowTextToSpeech shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
-        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("text");
+        speakerbox.play("Hello");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
     }
 }
