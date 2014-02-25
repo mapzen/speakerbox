@@ -31,9 +31,12 @@ public class MainActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            final Speakerbox speakerbox = new Speakerbox(getActivity());
             final View view = inflater.inflate(R.layout.fragment_main, container, false);
             final TextView textView = (EditText) view.findViewById(R.id.text);
+            final Speakerbox speakerbox = new Speakerbox(getActivity());
+
+            // Test calling play() immediately (before TTS initialization is complete).
+            speakerbox.play(textView.getText());
 
             final Button speakButton = (Button) view.findViewById(R.id.speak);
             speakButton.setOnClickListener(new View.OnClickListener() {

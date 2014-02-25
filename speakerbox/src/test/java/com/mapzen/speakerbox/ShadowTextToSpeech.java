@@ -39,6 +39,10 @@ public class ShadowTextToSpeech {
         return lastSpokenText;
     }
 
+    public void clearLastSpokenText() {
+        lastSpokenText = null;
+    }
+
     @Implementation
     public void shutdown() {
         shutdown = true;

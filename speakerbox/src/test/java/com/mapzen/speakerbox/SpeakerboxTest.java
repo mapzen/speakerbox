@@ -105,4 +105,12 @@ public class SpeakerboxTest {
         assertThat(ShadowLog.getLogs().get(0).tag).isEqualTo(Speakerbox.TAG);
         assertThat(ShadowLog.getLogs().get(0).msg).isEqualTo("Initialization failed.");
     }
+
+    @Test
+    public void shouldPlayLastSavedTextOnInit() throws Exception {
+        speakerbox.play("Hello");
+        shadowTextToSpeech.clearLastSpokenText();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
+    }
 }

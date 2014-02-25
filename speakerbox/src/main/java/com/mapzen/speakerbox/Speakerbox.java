@@ -14,6 +14,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     final Application.ActivityLifecycleCallbacks callbacks;
 
     private boolean muted = false;
+    private String text = null;
 
     public Speakerbox(Activity activity) {
         this.activity = activity;
@@ -59,7 +60,11 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.ERROR) {
+        if (status == TextToSpeech.SUCCESS) {
+            if (text != null) {
+                play(text);
+            }
+        } else {
             Log.e(TAG, "Initialization failed.");
         }
     }
@@ -69,6 +74,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(String text) {
+        this.text = text;
         if (!muted) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
