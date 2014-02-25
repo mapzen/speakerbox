@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import android.app.Activity;
-import android.app.Application;
 
 import java.util.ArrayList;
 
@@ -59,8 +58,10 @@ public class SpeakerboxTest {
     @Test
     public void shouldUnregisterLifecycleCallbacksOnActivityDestroyed() throws Exception {
         speakerbox.callbacks.onActivityDestroyed(activity);
-        ArrayList<Application.ActivityLifecycleCallbacks> callbackList =
-                field("mActivityLifecycleCallbacks").ofType(ArrayList.class).in(application).get();
+        ArrayList callbackList = field("mActivityLifecycleCallbacks")
+                .ofType(ArrayList.class)
+                .in(application)
+                .get();
         assertThat(callbackList).isEmpty();
     }
 

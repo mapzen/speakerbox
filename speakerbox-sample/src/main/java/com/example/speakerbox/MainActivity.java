@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
     @Override
@@ -29,16 +31,30 @@ public class MainActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            final View view = inflater.inflate(R.layout.fragment_main, container, false);
             final Speakerbox speakerbox = new Speakerbox(getActivity());
+            final View view = inflater.inflate(R.layout.fragment_main, container, false);
             final TextView textView = (EditText) view.findViewById(R.id.text);
-            final Button button = (Button) view.findViewById(R.id.button);
-            button.setOnClickListener(new View.OnClickListener() {
+
+            final Button speakButton = (Button) view.findViewById(R.id.speak);
+            speakButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     speakerbox.play(textView.getText().toString());
                 }
             });
+
+            final ToggleButton muteButton = (ToggleButton) view.findViewById(R.id.mute);
+            muteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        speakerbox.mute();
+                    } else {
+                        speakerbox.unmute();
+                    }
+                }
+            });
+
             return view;
         }
     }

@@ -11,17 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
         android:hint="@string/hint"
         android:maxLines="1"
         android:singleLine="true"
         android:text="@string/tagline" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/speak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text"
-        android:layout_centerHorizontal="true"
-        android:text="@string/chat" />
+        android:layout_alignParentLeft="true"
+        android:text="@string/speak" />
+
+    <ToggleButton
+        android:id="@+id/mute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/speak"
+        android:textOff="@string/mute"
+        android:textOn="@string/mute" />
 
 </RelativeLayout>

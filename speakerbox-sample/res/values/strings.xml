@@ -4,6 +4,7 @@
     <string name="app_name">Speakerbox Sample</string>
     <string name="tagline">Start where you are…</string>
     <string name="hint">Enter some text!</string>
-    <string name="chat">Speak</string>
+    <string name="speak">Speak</string>
+    <string name="mute">Mute</string>
 
 </resources>
