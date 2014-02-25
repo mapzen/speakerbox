@@ -38,9 +38,17 @@ public class SpeakerboxTest {
     }
 
     @Test
-    public void shouldSpeakText() throws Exception {
-        speakerbox.play("Hello");
-        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
+    public void shouldPlayString() throws Exception {
+        String expected = "Hello";
+        speakerbox.play(expected);
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo(expected);
+    }
+
+    @Test
+    public void shouldPlayCharacterSequence() throws Exception {
+        CharSequence expected = "Hello";
+        speakerbox.play(expected);
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo(expected.toString());
     }
 
     @Test

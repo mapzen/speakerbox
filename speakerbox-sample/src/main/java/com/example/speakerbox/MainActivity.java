@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
             speakButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    speakerbox.play(textView.getText().toString());
+                    speakerbox.play(textView.getText());
                 }
             });
 

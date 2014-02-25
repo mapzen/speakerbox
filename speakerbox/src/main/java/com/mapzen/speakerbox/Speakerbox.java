@@ -58,6 +58,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     public void onInit(int i) {
     }
 
+    public void play(CharSequence text) {
+        play(text.toString());
+    }
+
     public void play(String text) {
         if (!muted) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
