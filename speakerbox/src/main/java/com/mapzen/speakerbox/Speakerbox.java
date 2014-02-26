@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
+import java.util.LinkedHashMap;
+
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
 
@@ -13,8 +15,11 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     final TextToSpeech textToSpeech;
     final Application.ActivityLifecycleCallbacks callbacks;
 
+    private boolean initialized = false;
     private boolean muted = false;
-    private String text = null;
+    private String playOnInit = null;
+
+    private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
 
     public Speakerbox(Activity activity) {
         this.activity = activity;
@@ -61,8 +66,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            if (text != null) {
-                play(text);
+            initialized = true;
+            if (playOnInit != null) {
+                playInternal(playOnInit);
             }
         } else {
             Log.e(TAG, "Initialization failed.");
@@ -74,8 +80,27 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(String text) {
-        this.text = text;
+        text = applyRemixes(text);
+        if (initialized) {
+            playInternal(text);
+        } else {
+            playOnInit = text;
+        }
+    }
+
+    private String applyRemixes(String text) {
+        for (String key : samples.keySet()) {
+            if (text.contains(key)) {
+                text = text.replace(key, samples.get(key));
+            }
+        }
+
+        return text;
+    }
+
+    private void playInternal(String text) {
         if (!muted) {
+            Log.d(TAG, "Playing: \""+ text + "\"");
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
@@ -90,5 +115,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public boolean isMuted() {
         return muted;
+    }
+
+    public void remix(String original, String remix) {
+        samples.put(original, remix);
     }
 }

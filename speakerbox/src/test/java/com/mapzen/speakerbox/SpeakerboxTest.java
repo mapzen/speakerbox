@@ -23,6 +23,11 @@ public class SpeakerboxTest {
 
     @Before
     public void setUp() throws Exception {
+        init();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
+    }
+
+    private void init() {
         activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
         speakerbox = new Speakerbox(activity);
         shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
@@ -108,9 +113,40 @@ public class SpeakerboxTest {
 
     @Test
     public void shouldPlayLastSavedTextOnInit() throws Exception {
+        init();
         speakerbox.play("Hello");
         shadowTextToSpeech.clearLastSpokenText();
         shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
         assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hello");
+    }
+
+    @Test
+    public void shouldSubstituteRemixedText() throws Exception {
+        speakerbox.remix("Hello", "Hi");
+        speakerbox.remix("Goodbye", "Bye");
+
+        speakerbox.play("Hello");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hi");
+
+        speakerbox.play("Goodbye");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Bye");
+    }
+
+    @Test
+    public void shouldPreserveRemixOrder() throws Exception {
+        speakerbox.remix("Hello", "Hi");
+        speakerbox.remix("Hi", "Yo");
+        speakerbox.play("Hello");
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Yo");
+    }
+
+    @Test
+    public void shouldNotRemixSavedTextAgain() throws Exception {
+        init();
+        speakerbox.remix("Hi", "Hi Hi");
+        speakerbox.play("Hi");
+        shadowTextToSpeech.clearLastSpokenText();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hi Hi");
     }
 }
