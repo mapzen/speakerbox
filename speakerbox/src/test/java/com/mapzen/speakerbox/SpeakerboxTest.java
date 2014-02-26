@@ -149,4 +149,9 @@ public class SpeakerboxTest {
         shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
         assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Hi Hi");
     }
+
+    @Test
+    public void shouldReturnUnderlyingTextToSpeechInstance() throws Exception {
+        assertThat(speakerbox.getTextToSpeech()).isEqualTo(speakerbox.textToSpeech);
+    }
 }

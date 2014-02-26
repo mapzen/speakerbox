@@ -120,4 +120,8 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     public void remix(String original, String remix) {
         samples.put(original, remix);
     }
+
+    public TextToSpeech getTextToSpeech() {
+        return textToSpeech;
+    }
 }
