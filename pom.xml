@@ -29,6 +29,11 @@
         <module>speakerbox-sample</module>
     </modules>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <scm>
         <url>http://github.com/mapzen/speakerbox</url>
         <connection>scm:git:git://github.com/mapzen/speakerbox.git</connection>
