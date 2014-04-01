@@ -15,7 +15,7 @@ Speakerbox creates and manages a new instance of [TextToSpeech][1] for a given a
 Speakerbox speakerbox = new Speakerbox(activity);
 ```
 
-There is no need to create your own [OnInitListener][2]. If you pass text to speakerbox before the [TextToSpeech][1] engine is initialized it will play the text once initialziation is complete.
+There is no need to create your own [OnInitListener][2]. If you pass text to Speakerbox before the [TextToSpeech][1] engine is initialized it will automatically play the text once initialziation is complete.
 
 #### Play
 
