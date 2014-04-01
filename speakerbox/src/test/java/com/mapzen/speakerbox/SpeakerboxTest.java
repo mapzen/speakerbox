@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import android.app.Activity;
@@ -15,7 +17,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.reflect.core.Reflection.field;
 import static org.robolectric.Robolectric.application;
 
-@RunWith(SpeakerboxTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(shadows = ShadowTextToSpeech.class)
 public class SpeakerboxTest {
     private Activity activity;
     private Speakerbox speakerbox;
