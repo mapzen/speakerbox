@@ -17,6 +17,7 @@ package com.mapzen.speakerbox;
 
 import android.app.Activity;
 import android.app.Application;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -76,6 +77,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         };
 
         application.registerActivityLifecycleCallbacks(callbacks);
+        enableVolumeControl();
     }
 
     @Override
@@ -138,5 +140,13 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public TextToSpeech getTextToSpeech() {
         return textToSpeech;
+    }
+
+    public void enableVolumeControl() {
+        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    public void disableVolumeControl() {
+        activity.setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
     }
 }

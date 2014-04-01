@@ -24,6 +24,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 
 import java.util.ArrayList;
@@ -171,5 +172,27 @@ public class SpeakerboxTest {
     @Test
     public void shouldReturnUnderlyingTextToSpeechInstance() throws Exception {
         assertThat(speakerbox.getTextToSpeech()).isEqualTo(speakerbox.textToSpeech);
+    }
+
+    @Test
+    public void shouldEnableVolumeControlByDefault() throws Exception {
+        init();
+        assertThat(activity.getVolumeControlStream()).isEqualTo(AudioManager.STREAM_MUSIC);
+    }
+
+    @Test
+    public void shouldDisableVolumeControl() throws Exception {
+        init();
+        speakerbox.disableVolumeControl();
+        assertThat(activity.getVolumeControlStream())
+                .isEqualTo(AudioManager.USE_DEFAULT_STREAM_TYPE);
+    }
+
+    @Test
+    public void shouldReEnableVolumeControl() throws Exception {
+        init();
+        speakerbox.disableVolumeControl();
+        speakerbox.enableVolumeControl();
+        assertThat(activity.getVolumeControlStream()).isEqualTo(AudioManager.STREAM_MUSIC);
     }
 }
