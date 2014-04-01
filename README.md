@@ -6,16 +6,16 @@ Android Text-to-Speech simplified.
 
 ## Usage
 
-Speakerbox streamlines and simplifies basic TextToSpeech tasks and adds powerful new functionality.
+Speakerbox streamlines and simplifies basic [TextToSpeech][1] tasks and adds powerful new functionality.
 
 #### Initializion
 
-Speakerbox creates and manages a new instance of TextToSpeech for a given activity.
+Speakerbox creates and manages a new instance of [TextToSpeech][1] for a given activity.
 ```java
 Speakerbox speakerbox = new Speakerbox(activity);
 ```
 
-There is no need to create your own OnInitListener. If you pass text to speakerbox before the TextToSpeech engine is initialized it will play the text once initialziation is complete.
+There is no need to create your own [OnInitListener][2]. If you pass text to speakerbox before the [TextToSpeech][1] engine is initialized it will play the text once initialziation is complete.
 
 #### Play
 
@@ -56,13 +56,13 @@ speakerbox.play("The show starts in 5 min.");
 
 #### Shutdown
 
-Speakerbox will automatically shutdown the TextToSpeech engine and release its resources when the host activity is destroyed so you don't have to.
+Speakerbox will automatically shutdown the [TextToSpeech][1] engine and release its resources when the host activity is destroyed so you don't have to.
 
 ## Install
 
 #### Download Jar
 
-Download the latest JAR.
+Download the [latest JAR][3].
 
 #### Maven
 
@@ -101,3 +101,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+[1]: https://developer.android.com/reference/android/speech/tts/TextToSpeech.html
+[2]: https://developer.android.com/reference/android/speech/tts/TextToSpeech.OnInitListener.html
+[3]: #
