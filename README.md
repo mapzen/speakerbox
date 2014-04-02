@@ -6,20 +6,21 @@ Android Text-to-Speech simplified.
 
 ## Usage
 
-Speakerbox streamlines and simplifies basic [TextToSpeech][1] tasks and adds powerful new functionality.
+Speakerbox simplifies basic [TextToSpeech][1] tasks and adds new tools including muting and text substitution.
 
 #### Initializion
 
 Speakerbox creates and manages a new instance of [TextToSpeech][1] for a given activity.
+
 ```java
 Speakerbox speakerbox = new Speakerbox(activity);
 ```
 
-There is no need to create your own [OnInitListener][2]. If you pass text to Speakerbox before the [TextToSpeech][1] engine is initialized it will automatically play the text once initialziation is complete.
+There is no need to create your own [OnInitListener][2]. If you pass text to Speakerbox before the [TextToSpeech][1] engine has finished initializing it will save the text and automatically play it once initialization is complete.
 
 #### Play
 
-Sythesizing text to speech with Speakerbox is simple. The text will play immediately or once initializion is complete (see above).
+Synthesizing text to speech with Speakerbox is simple. The text will play immediately or once initialization is complete (see above).
 
 ```java
 Speakerbox speakerbox = new Speakerbox(activity);
@@ -82,24 +83,6 @@ Include dependency using Gradle.
 
 ```groovy
 compile 'com.mapzen.android:speakerbox:1.0.0'
-```
-
-## License
-
-```
-Copyright 2014 Mapzen
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 ```
 
 [1]: https://developer.android.com/reference/android/speech/tts/TextToSpeech.html
