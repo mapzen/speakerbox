@@ -1,6 +1,6 @@
 # Speakerbox
 
-[![Build Status](https://travis-ci.org/mapzen/speakerbox.svg?branch=master)](https://travis-ci.org/mapzen/speakerbox)
+[![Circle CI Build Status](https://circleci.com/gh/mapzen/speakerbox.png?circle-token=3ce51f87eb64cdbdd087e6a2811d3834fb48d714)](https://circleci.com/gh/mapzen/speakerbox)
 
 Android Text-to-Speech simplified.
 
