@@ -203,4 +203,11 @@ public class SpeakerboxTest {
         speakerbox.stop();
         assertThat(shadowTextToSpeech.getLastSpokenText()).isNull();
     }
+
+    @Test
+    public void shouldRemainStopped() throws Exception {
+        init();
+        speakerbox.stop();
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isNull();
+    }
 }
