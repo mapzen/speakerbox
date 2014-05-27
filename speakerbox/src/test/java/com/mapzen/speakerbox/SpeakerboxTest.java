@@ -195,4 +195,12 @@ public class SpeakerboxTest {
         speakerbox.enableVolumeControl();
         assertThat(activity.getVolumeControlStream()).isEqualTo(AudioManager.STREAM_MUSIC);
     }
+
+    @Test
+    public void shouldStopPlaying() throws Exception {
+        init();
+        speakerbox.play("Hello");
+        speakerbox.stop();
+        assertThat(shadowTextToSpeech.getLastSpokenText()).isNull();
+    }
 }
