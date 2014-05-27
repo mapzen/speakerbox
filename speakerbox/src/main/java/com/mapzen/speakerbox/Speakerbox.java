@@ -106,7 +106,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void stop() {
-	textToSpeech.stop();
+        textToSpeech.stop();
     }
 
     private String applyRemixes(String text) {

@@ -199,8 +199,9 @@ public class SpeakerboxTest {
     @Test
     public void shouldStopPlaying() throws Exception {
         init();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
         speakerbox.play("Hello");
         speakerbox.stop();
-        assertThat(shadowTextToSpeech.getLastSpokenText()).isNull();
+        assertThat(shadowTextToSpeech.isStopped()).isTrue();
     }
 }
