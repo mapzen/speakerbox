@@ -105,6 +105,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         }
     }
 
+    public void stop() {
+        textToSpeech.stop();
+    }
+
     private String applyRemixes(String text) {
         for (String key : samples.keySet()) {
             if (text.contains(key)) {
