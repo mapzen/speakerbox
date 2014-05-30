@@ -37,7 +37,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private String playOnInit = null;
 
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
-    private final ArrayList<String> ignoreList = new ArrayList<String>();
+    private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
 
     public Speakerbox(Activity activity) {
         this.activity = activity;
@@ -99,7 +99,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(String text) {
-        if(checkIfShouldPlay(text)) {
+        if(doesNotContainUnwantedPhrase(text)) {
             text = applyRemixes(text);
             if (initialized) {
                 playInternal(text);
@@ -130,12 +130,12 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         }
     }
 
-    public void disregardInputIfContains(String text) {
-        ignoreList.add(text);
+    public void dontPlayIfContains(String text) {
+        unwantedPhrases.add(text);
     }
 
-    public boolean checkIfShouldPlay(String text){
-        for(String invalid : ignoreList) {
+    private boolean doesNotContainUnwantedPhrase(String text){
+        for(String invalid : unwantedPhrases) {
             if(text.contains(invalid)) {
                 return false;
             }

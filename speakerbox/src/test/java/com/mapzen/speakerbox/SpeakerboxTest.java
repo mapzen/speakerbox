@@ -209,7 +209,7 @@ public class SpeakerboxTest {
     public void checkIfTextIgnored() throws Exception {
         init();
         shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
-        speakerbox.disregardInputIfContains("Continue on  for");
+        speakerbox.dontPlayIfContains("Continue on  for");
         speakerbox.play("Yo");
         speakerbox.play("Continue on  for 12 feet");
         assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Yo");
