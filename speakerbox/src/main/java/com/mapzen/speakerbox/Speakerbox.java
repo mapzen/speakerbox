@@ -23,6 +23,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
@@ -36,6 +37,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private String playOnInit = null;
 
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
+    private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
 
     public Speakerbox(Activity activity) {
         this.activity = activity;
@@ -97,11 +99,13 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(String text) {
-        text = applyRemixes(text);
-        if (initialized) {
-            playInternal(text);
-        } else {
-            playOnInit = text;
+        if(doesNotContainUnwantedPhrase(text)) {
+            text = applyRemixes(text);
+            if (initialized) {
+                playInternal(text);
+            } else {
+                playOnInit = text;
+            }
         }
     }
 
@@ -124,6 +128,19 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
             Log.d(TAG, "Playing: \""+ text + "\"");
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
+    }
+
+    public void dontPlayIfContains(String text) {
+        unwantedPhrases.add(text);
+    }
+
+    private boolean doesNotContainUnwantedPhrase(String text){
+        for(String invalid : unwantedPhrases) {
+            if(text.contains(invalid)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void mute() {
