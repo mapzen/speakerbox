@@ -34,4 +34,23 @@
         android:textOff="@string/mute"
         android:textOn="@string/mute" />
 
+    <RadioGroup
+        android:layout_below="@id/speak"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/queue_mode_add"
+            android:text="Add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/queue_mode_flush"
+            android:text="Flush"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
+
 </RelativeLayout>
