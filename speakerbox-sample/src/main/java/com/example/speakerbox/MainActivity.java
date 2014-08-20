@@ -20,12 +20,14 @@ import com.mapzen.speakerbox.Speakerbox;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -69,6 +71,26 @@ public class MainActivity extends Activity {
                         speakerbox.mute();
                     } else {
                         speakerbox.unmute();
+                    }
+                }
+            });
+
+            final RadioButton add = (RadioButton) view.findViewById(R.id.queue_mode_add);
+            add.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+                    }
+                }
+            });
+
+            final RadioButton flush = (RadioButton) view.findViewById(R.id.queue_mode_flush);
+            flush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        speakerbox.setQueueMode(TextToSpeech.QUEUE_FLUSH);
                     }
                 }
             });
