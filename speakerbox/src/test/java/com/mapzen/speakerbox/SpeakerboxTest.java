@@ -214,4 +214,21 @@ public class SpeakerboxTest {
         speakerbox.play("Continue on  for 12 feet");
         assertThat(shadowTextToSpeech.getLastSpokenText()).isEqualTo("Yo");
     }
+
+    @Test
+    public void shouldUseDefaultQueueMode() throws Exception {
+        init();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
+        speakerbox.play("Yo");
+        assertThat(shadowTextToSpeech.getQueueMode()).isEqualTo(TextToSpeech.QUEUE_FLUSH);
+    }
+
+    @Test
+    public void shouldUpdateQueueMode() throws Exception {
+        init();
+        shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.SUCCESS);
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.play("Yo");
+        assertThat(shadowTextToSpeech.getQueueMode()).isEqualTo(TextToSpeech.QUEUE_ADD);
+    }
 }

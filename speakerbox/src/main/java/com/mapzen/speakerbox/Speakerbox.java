@@ -22,8 +22,8 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
-import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
@@ -35,6 +35,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private boolean initialized = false;
     private boolean muted = false;
     private String playOnInit = null;
+    private int queueMode = TextToSpeech.QUEUE_FLUSH;
 
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
     private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
@@ -126,7 +127,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private void playInternal(String text) {
         if (!muted) {
             Log.d(TAG, "Playing: \""+ text + "\"");
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            textToSpeech.speak(text, queueMode, null);
         }
     }
 
@@ -169,5 +170,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public void disableVolumeControl() {
         activity.setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+    }
+
+    public void setQueueMode(int queueMode) {
+        this.queueMode = queueMode;
     }
 }
