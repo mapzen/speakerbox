@@ -63,6 +63,14 @@ public class MainActivity extends Activity {
                 }
             });
 
+            final Button stopButton = (Button) view.findViewById(R.id.stop);
+            stopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    speakerbox.stop();
+                }
+            });
+
             final ToggleButton muteButton = (ToggleButton) view.findViewById(R.id.mute);
             muteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
