@@ -143,12 +143,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         }
         return true;
     }
-
+    
     public void mute() {
         muted = true;
-        if (textToSpeech.isSpeaking()) {
-            textToSpeech.stop();
-        }
+        textToSpeech.stop();
     }
 
     public void unmute() {
