@@ -126,9 +126,9 @@ public class SpeakerboxTest {
     @Test
     public void shouldStopOnMute() {
         speakerbox.unmute();
-        speakerbox.play("This is a test string to speak that is adequately long");
+        speakerbox.play("Hello");
         speakerbox.mute();
-        assertThat(speakerbox.getTextToSpeech().isSpeaking()).isFalse();
+        assertThat(speakerbox.textToSpeech.isSpeaking()).isFalse();
     }
 
     @Test
