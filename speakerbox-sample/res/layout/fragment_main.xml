@@ -25,6 +25,14 @@
         android:layout_alignParentLeft="true"
         android:text="@string/speak" />
 
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:layout_toRightOf="@id/speak"
+        android:text="@string/stop" />
+
     <ToggleButton
         android:id="@+id/mute"
         android:layout_width="wrap_content"
