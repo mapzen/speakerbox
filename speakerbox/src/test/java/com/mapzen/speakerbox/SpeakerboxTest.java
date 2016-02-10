@@ -124,6 +124,14 @@ public class SpeakerboxTest {
     }
 
     @Test
+    public void shouldStopOnMute() {
+        speakerbox.unmute();
+        speakerbox.play("This is a test string to speak that is adequately long");
+        speakerbox.mute();
+        assertThat(speakerbox.getTextToSpeech().isSpeaking()).isFalse();
+    }
+
+    @Test
     public void shouldLogInitializationError() throws Exception {
         shadowTextToSpeech.getOnInitListener().onInit(TextToSpeech.ERROR);
         assertThat(ShadowLog.getLogs().get(0).tag).isEqualTo(Speakerbox.TAG);
