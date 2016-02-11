@@ -8,7 +8,7 @@ Android Text-to-Speech simplified.
 
 Speakerbox simplifies basic [TextToSpeech][1] tasks and adds new tools including muting and text substitution.
 
-#### Initializion
+#### Initialization
 
 Speakerbox creates and manages a new instance of [TextToSpeech][1] for a given activity.
 
