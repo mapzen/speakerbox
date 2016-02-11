@@ -31,6 +31,7 @@ public class ShadowTextToSpeech {
     private String lastSpokenText;
     private boolean shutdown = false;
     private boolean stopped = false;
+    private boolean isSpeaking = false;
     private int queueMode = -1;
 
     public void __constructor__(Context context, TextToSpeech.OnInitListener listener) {
@@ -50,6 +51,7 @@ public class ShadowTextToSpeech {
     public int speak(final String text, final int queueMode, final HashMap<String, String> params) {
         lastSpokenText = text;
         this.queueMode = queueMode;
+        isSpeaking = true;
         return TextToSpeech.SUCCESS;
     }
 
@@ -77,9 +79,14 @@ public class ShadowTextToSpeech {
     @Implementation
     public void stop() {
         stopped = true;
+        isSpeaking = false;
     }
 
     public boolean isStopped() {
         return stopped;
+    }
+
+    public boolean isSpeaking() {
+        return isSpeaking;
     }
 }
