@@ -28,9 +28,22 @@ import java.util.LinkedHashMap;
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
 
-    final Activity activity;
-    final TextToSpeech textToSpeech;
-    final Application.ActivityLifecycleCallbacks callbacks;
+    private final TextToSpeech textToSpeech;
+
+    private final Application application;
+
+    /**
+     * Callbacks are registered for upon initialization. Set an activity on the Speakerbox
+     * object to have this class take care of shutting down the TextToSpeech object or register
+     * for {@link android.app.Application.ActivityLifecycleCallbacks} in your application and
+     */
+    private final Application.ActivityLifecycleCallbacks callbacks;
+
+    /**
+     * If set, this class will shut itself down when the activity is destroyed. Only set an
+     * activity if you want the Speakerbox's state to be tied to the activity lifecycle
+     */
+    private Activity activity = null;
 
     private boolean initialized = false;
     private boolean muted = false;
@@ -40,11 +53,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
     private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
 
-    public Speakerbox(Activity activity) {
-        this.activity = activity;
-        this.textToSpeech = new TextToSpeech(activity, this);
-
-        final Application application = (Application) activity.getApplicationContext();
+    public Speakerbox(final Application application) {
+        this.application = application;
+        this.textToSpeech = new TextToSpeech(application, this);
         this.callbacks = new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -73,14 +84,11 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
             @Override
             public void onActivityDestroyed(Activity activity) {
                 if (Speakerbox.this.activity == activity) {
-                    textToSpeech.shutdown();
-                    application.unregisterActivityLifecycleCallbacks(this);
+                    shutdown();
                 }
             }
         };
-
         application.registerActivityLifecycleCallbacks(callbacks);
-        enableVolumeControl();
     }
 
     @Override
@@ -93,6 +101,15 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         } else {
             Log.e(TAG, "Initialization failed.");
         }
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+        enableVolumeControl();
+    }
+
+    public Application.ActivityLifecycleCallbacks getCallbacks() {
+        return callbacks;
     }
 
     public void play(CharSequence text) {
@@ -146,7 +163,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public void mute() {
         muted = true;
-        textToSpeech.stop();
+        if (textToSpeech.isSpeaking()) {
+            textToSpeech.stop();
+        }
     }
 
     public void unmute() {
@@ -166,14 +185,26 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void enableVolumeControl() {
-        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        if (activity != null) {
+            activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        }
     }
 
     public void disableVolumeControl() {
-        activity.setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+        if (activity != null) {
+            activity.setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+        }
     }
 
     public void setQueueMode(int queueMode) {
         this.queueMode = queueMode;
+    }
+
+    /**
+     * Shutdown the {@link TextToSpeech} object and unregister activity lifecycle callbacks
+     */
+    public void shutdown() {
+        textToSpeech.shutdown();
+        application.unregisterActivityLifecycleCallbacks(callbacks);
     }
 }

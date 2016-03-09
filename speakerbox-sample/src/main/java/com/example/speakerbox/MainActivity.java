@@ -50,7 +50,8 @@ public class MainActivity extends Activity {
                 Bundle savedInstanceState) {
             final View view = inflater.inflate(R.layout.fragment_main, container, false);
             final TextView textView = (EditText) view.findViewById(R.id.text);
-            final Speakerbox speakerbox = new Speakerbox(getActivity());
+            final Speakerbox speakerbox = new Speakerbox(getActivity().getApplication());
+            speakerbox.setActivity(getActivity());
 
             // Test calling play() immediately (before TTS initialization is complete).
             speakerbox.play(textView.getText());
