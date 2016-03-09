@@ -48,8 +48,9 @@ public class SpeakerboxTest {
 
     private void init() {
         activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
-        speakerbox = new Speakerbox(activity);
-        shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.textToSpeech);
+        speakerbox = new Speakerbox(activity.getApplication());
+        speakerbox.setActivity(activity);
+        shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.getTextToSpeech());
     }
 
     @Test
@@ -59,7 +60,7 @@ public class SpeakerboxTest {
 
     @Test
     public void shouldInitTextToSpeech() throws Exception {
-        assertThat(shadowTextToSpeech.getContext()).isEqualTo(activity);
+        assertThat(shadowTextToSpeech.getContext()).isEqualTo(activity.getApplication());
         assertThat(shadowTextToSpeech.getOnInitListener()).isEqualTo(speakerbox);
     }
 
@@ -79,19 +80,19 @@ public class SpeakerboxTest {
 
     @Test
     public void shouldShutdownTextToSpeechOnActivityDestroyed() throws Exception {
-        speakerbox.callbacks.onActivityDestroyed(activity);
+        speakerbox.getCallbacks().onActivityDestroyed(activity);
         assertThat(shadowTextToSpeech.isShutdown()).isTrue();
     }
 
     @Test
     public void shouldNotShutdownTextToSpeechOnAnotherActivityDestroyed() throws Exception {
-        speakerbox.callbacks.onActivityDestroyed(new Activity());
+        speakerbox.getCallbacks().onActivityDestroyed(new Activity());
         assertThat(shadowTextToSpeech.isShutdown()).isFalse();
     }
 
     @Test
     public void shouldUnregisterLifecycleCallbacksOnActivityDestroyed() throws Exception {
-        speakerbox.callbacks.onActivityDestroyed(activity);
+        speakerbox.getCallbacks().onActivityDestroyed(activity);
         ArrayList callbackList = field("mActivityLifecycleCallbacks")
                 .ofType(ArrayList.class)
                 .in(application)
@@ -128,7 +129,7 @@ public class SpeakerboxTest {
         speakerbox.unmute();
         speakerbox.play("Hello");
         speakerbox.mute();
-        assertThat(speakerbox.textToSpeech.isSpeaking()).isFalse();
+        assertThat(speakerbox.getTextToSpeech().isSpeaking()).isFalse();
     }
 
     @Test
@@ -179,7 +180,7 @@ public class SpeakerboxTest {
 
     @Test
     public void shouldReturnUnderlyingTextToSpeechInstance() throws Exception {
-        assertThat(speakerbox.getTextToSpeech()).isEqualTo(speakerbox.textToSpeech);
+        assertThat(speakerbox.getTextToSpeech()).isEqualTo(speakerbox.getTextToSpeech());
     }
 
     @Test
