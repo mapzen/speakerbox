@@ -17,6 +17,7 @@ package com.mapzen.speakerbox;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -27,6 +28,15 @@ import java.util.LinkedHashMap;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
+
+    /**
+     * Pitch when we have focus
+     */
+    private static final float FOCUS_PITCH = 1.0f;
+    /**
+     * Pitch when we should duck audio for another app
+     */
+    private static final float DUCK_PITCH = 0.5f;
 
     private final TextToSpeech textToSpeech;
 
@@ -52,6 +62,19 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
     private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
+
+    AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    textToSpeech.setPitch(FOCUS_PITCH);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    textToSpeech.setPitch(DUCK_PITCH);
+                    break;
+            }
+        }
+    };
 
     public Speakerbox(final Application application) {
         this.application = application;
@@ -105,7 +128,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
-        enableVolumeControl();
+        enableVolumeControl(this.activity);
     }
 
     public Application.ActivityLifecycleCallbacks getCallbacks() {
@@ -184,13 +207,24 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         return textToSpeech;
     }
 
-    public void enableVolumeControl() {
+    public void requestAudioFocus() {
+        final AudioManager am = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
+        am.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+    }
+
+    public void abandonAudioFocus() {
+        AudioManager am = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
+        am.abandonAudioFocus(audioFocusChangeListener);
+    }
+
+    public void enableVolumeControl(Activity activity) {
         if (activity != null) {
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         }
     }
 
-    public void disableVolumeControl() {
+    public void disableVolumeControl(Activity activity) {
         if (activity != null) {
             activity.setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
         }

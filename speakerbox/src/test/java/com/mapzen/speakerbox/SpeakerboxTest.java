@@ -192,7 +192,7 @@ public class SpeakerboxTest {
     @Test
     public void shouldDisableVolumeControl() throws Exception {
         init();
-        speakerbox.disableVolumeControl();
+        speakerbox.disableVolumeControl(activity);
         assertThat(activity.getVolumeControlStream())
                 .isEqualTo(AudioManager.USE_DEFAULT_STREAM_TYPE);
     }
@@ -200,8 +200,8 @@ public class SpeakerboxTest {
     @Test
     public void shouldReEnableVolumeControl() throws Exception {
         init();
-        speakerbox.disableVolumeControl();
-        speakerbox.enableVolumeControl();
+        speakerbox.disableVolumeControl(activity);
+        speakerbox.enableVolumeControl(activity);
         assertThat(activity.getVolumeControlStream()).isEqualTo(AudioManager.STREAM_MUSIC);
     }
 
