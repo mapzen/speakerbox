@@ -73,7 +73,7 @@ Include dependency using Maven.
 <dependency>
   <groupId>com.mapzen.android</groupId>
   <artifactId>speakerbox</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -82,9 +82,9 @@ Include dependency using Maven.
 Include dependency using Gradle.
 
 ```groovy
-compile 'com.mapzen.android:speakerbox:1.3.0'
+compile 'com.mapzen.android:speakerbox:1.4.0'
 ```
 
 [1]: https://developer.android.com/reference/android/speech/tts/TextToSpeech.html
 [2]: https://developer.android.com/reference/android/speech/tts/TextToSpeech.OnInitListener.html
-[3]: http://search.maven.org/remotecontent?filepath=com/mapzen/android/speakerbox/1.3.0/speakerbox-1.3.0.jar
+[3]: http://search.maven.org/remotecontent?filepath=com/mapzen/android/speakerbox/1.4.0/speakerbox-1.4.0.jar
