@@ -104,6 +104,20 @@ public class MainActivity extends Activity {
                 }
             });
 
+            final Button requestButton = (Button) view.findViewById(R.id.request_focus_btn);
+            requestButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    speakerbox.requestAudioFocus();
+                }
+            });
+
+            final Button abandonButton = (Button) view.findViewById(R.id.abandon_focus_btn);
+            abandonButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    speakerbox.abandonAudioFocus();
+                }
+            });
+
             return view;
         }
     }
