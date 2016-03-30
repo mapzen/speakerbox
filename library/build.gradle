@@ -16,7 +16,16 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+  sourceSets {
+    test {
+      java.srcDir file('src/test/java')
+      java.srcDir file('build/generated/source/r/debug')
+    }
+  }
 }
+
+group = GROUP
+version = VERSION_NAME
 
 dependencies {
   compile 'com.android.support:appcompat-v7:23.2.0'
@@ -26,3 +35,13 @@ dependencies {
   testCompile 'org.easytesting:fest-reflect:1.4.1'
 
 }
+
+tasks.withType(Test) {
+  testLogging {
+    exceptionFormat "full"
+    events "started", "skipped", "passed", "failed"
+    showStandardStreams true
+  }
+}
+
+apply from: file('gradle-mvn-push.gradle')
