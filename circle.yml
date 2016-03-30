@@ -1,0 +1,21 @@
+machine:
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+
+dependencies:
+  pre:
+    - echo y | android update sdk --all --no-ui --force --filter "extra-android-m2repository"
+
+test:
+  override:
+    - ./gradlew testDebug
+
+deployment:
+  all:
+    branch: /^(?!master).*$/
+    commands:
+      - ./gradlew testDebug
+  master:
+    branch: master
+    commands:
+      - ./gradlew testDebug
