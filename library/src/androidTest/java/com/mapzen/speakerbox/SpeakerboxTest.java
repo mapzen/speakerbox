@@ -29,7 +29,7 @@ import android.speech.tts.TextToSpeech;
 
 import java.util.ArrayList;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.fest.reflect.core.Reflection.field;
 import static org.robolectric.Robolectric.application;
 

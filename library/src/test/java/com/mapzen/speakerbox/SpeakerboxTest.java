@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowLog;
 
 import android.app.Activity;
@@ -29,9 +30,9 @@ import android.speech.tts.TextToSpeech;
 
 import java.util.ArrayList;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.fest.reflect.core.Reflection.field;
-import static org.robolectric.Robolectric.application;
+import static org.robolectric.RuntimeEnvironment.application;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(shadows = com.mapzen.speakerbox.ShadowTextToSpeech.class)
@@ -50,7 +51,8 @@ public class SpeakerboxTest {
         activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
         speakerbox = new Speakerbox(activity.getApplication());
         speakerbox.setActivity(activity);
-        shadowTextToSpeech = Robolectric.shadowOf_(speakerbox.getTextToSpeech());
+        shadowTextToSpeech = (ShadowTextToSpeech) ShadowExtractor.extract(
+                speakerbox.getTextToSpeech());
     }
 
     @Test

@@ -22,5 +22,7 @@ dependencies {
   compile 'com.android.support:appcompat-v7:23.2.0'
   testCompile 'junit:junit:4.12'
   testCompile 'org.robolectric:robolectric:3.0'
+  testCompile 'org.assertj:assertj-core:1.7.0'
+  testCompile 'org.easytesting:fest-reflect:1.4.1'
 
 }
