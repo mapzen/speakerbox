@@ -9,9 +9,16 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk --all --no-ui --force --filter "build-tools-19.0.3,platform-tools,android-18,addon-google_apis-google-18,android-19,extra-android-m2repository"
-    - mvn install -f speakerbox/pom.xml -Dmaven.test.skip=true
+    - echo y | android update sdk --all --no-ui --force --filter "extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "tools"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
 
 test:
   override:
-    - mvn verify
+    - ./gradlew testDebug
+
+deployment:
+  master:
+      branch: master
+      commands:
+        - ./gradlew uploadArchives -PsonatypeUsername=$SONATYPE_NEXUS_SNAPSHOTS_USERNAME -PsonatypePassword=$SONATYPE_NEXUS_SNAPSHOTS_PASSWORD
