@@ -2,6 +2,7 @@ package com.mapzen.speakerbox.example;
 
 import com.mapzen.speakerbox.Speakerbox;
 
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -39,6 +40,32 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 speakerbox.play(textView.getText());
+            }
+        });
+
+        final TextView speakStatus = (TextView) view.findViewById(R.id.speak_status);
+
+        final Button speakWNotifyButton = (Button) view.findViewById(R.id.speak_w_notify);
+        speakWNotifyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Runnable onStart = new Runnable() {
+                    public void run() {
+                        speakStatus.setText(getText(R.string.start_speaking));
+                    }
+                };
+                Runnable onDone = new Runnable() {
+                    public void run() {
+                        speakStatus.setText(getText(R.string.done_speaking));
+                        clearStatusText(speakStatus);
+                    }
+                };
+                Runnable onError = new Runnable() {
+                    public void run() {
+                        speakStatus.setText(getText(R.string.error_speaking));
+                        clearStatusText(speakStatus);
+                    }
+                };
+                speakerbox.play(textView.getText().toString(), onStart, onDone, null);
             }
         });
 
@@ -96,5 +123,13 @@ public class MainActivityFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void clearStatusText(final TextView speakStatus) {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                speakStatus.setText("");
+            }
+        }, 1000);
     }
 }
