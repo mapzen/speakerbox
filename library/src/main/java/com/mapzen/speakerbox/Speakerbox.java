@@ -98,7 +98,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
         @Override
         public void onDone(String utteranceId) {
-            if(detectAndRun(utteranceId, onDoneRunnables)) {
+            if (detectAndRun(utteranceId, onDoneRunnables)) {
                 // because either onDone or onError will be called for an utteranceId, cleanup other
                 if (onErrorRunnables.containsKey(utteranceId)) {
                     onErrorRunnables.remove(utteranceId);
@@ -116,7 +116,6 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
             }
         }
     };
-
 
     public Speakerbox(final Application application) {
         this.application = application;
@@ -162,7 +161,7 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         if (status == TextToSpeech.SUCCESS) {
             initialized = true;
             if (playOnInit != null) {
-                playInternal(playOnInit);
+                playInternal(playOnInit, UTTERANCE_ID_NONE);
             }
         } else {
             Log.e(TAG, "Initialization failed.");
@@ -227,18 +226,17 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         if(doesNotContainUnwantedPhrase(text)) {
             text = applyRemixes(text);
             if (initialized) {
-                String utteranceId = playInternal(text);
-                if (utteranceId != UTTERANCE_ID_NONE) {
-                    if (onStart != null) {
-                        onStartRunnables.put(utteranceId, onStart);
-                    }
-                    if (onDone != null) {
-                        onDoneRunnables.put(utteranceId, onDone);
-                    }
-                    if (onError != null) {
-                        onErrorRunnables.put(utteranceId, onError);
-                    }
+                String utteranceId = String.valueOf(SystemClock.currentThreadTimeMillis());
+                if (onStart != null) {
+                    onStartRunnables.put(utteranceId, onStart);
                 }
+                if (onDone != null) {
+                    onDoneRunnables.put(utteranceId, onDone);
+                }
+                if (onError != null) {
+                    onErrorRunnables.put(utteranceId, onError);
+                }
+                playInternal(text, utteranceId);
             } else {
                 playOnInit = text;
             }
@@ -259,19 +257,16 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         return text;
     }
 
-    private String playInternal(String text) {
+    private void playInternal(String text, String utteranceId) {
         if (muted) {
-            return UTTERANCE_ID_NONE;
+            return;
         }
         Log.d(TAG, "Playing: \""+ text + "\"");
-        String utteranceId = String.valueOf(SystemClock.currentThreadTimeMillis());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             textToSpeech.speak(text, queueMode, null, utteranceId);
         } else {
             textToSpeech.speak(text, queueMode, null);
-            return UTTERANCE_ID_NONE;
         }
-        return utteranceId;
     }
 
     public void dontPlayIfContains(String text) {
