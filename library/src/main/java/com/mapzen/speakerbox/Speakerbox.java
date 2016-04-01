@@ -19,11 +19,17 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
@@ -37,6 +43,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
      * Pitch when we should duck audio for another app
      */
     private static final float DUCK_PITCH = 0.5f;
+    /**
+     * ID for when no text is spoken
+     */
+    public static final String UTTERANCE_ID_NONE = "-1";
 
     private final TextToSpeech textToSpeech;
 
@@ -63,6 +73,10 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     private final LinkedHashMap<String, String> samples = new LinkedHashMap<String, String>();
     private final ArrayList<String> unwantedPhrases = new ArrayList<String>();
 
+    private HashMap<String, Runnable> onStartRunnables = new HashMap<String, Runnable>();
+    private HashMap<String, Runnable> onDoneRunnables = new HashMap<String, Runnable>();
+    private HashMap<String, Runnable> onErrorRunnables = new HashMap<String, Runnable>();
+
     AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
         public void onAudioFocusChange(int focusChange) {
             switch (focusChange) {
@@ -76,9 +90,38 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         }
     };
 
+    UtteranceProgressListener utteranceProgressListener = new UtteranceProgressListener() {
+        @Override
+        public void onStart(String utteranceId) {
+            detectAndRun(utteranceId, onStartRunnables);
+        }
+
+        @Override
+        public void onDone(String utteranceId) {
+            if(detectAndRun(utteranceId, onDoneRunnables)) {
+                // because either onDone or onError will be called for an utteranceId, cleanup other
+                if (onErrorRunnables.containsKey(utteranceId)) {
+                    onErrorRunnables.remove(utteranceId);
+                }
+            }
+        }
+
+        @Override
+        public void onError(String utteranceId) {
+            if (detectAndRun(utteranceId, onErrorRunnables)) {
+                // because either onDone or onError will be called for an utteranceId, cleanup other
+                if (onDoneRunnables.containsKey(utteranceId)) {
+                    onDoneRunnables.remove(utteranceId);
+                }
+            }
+        }
+    };
+
+
     public Speakerbox(final Application application) {
         this.application = application;
         this.textToSpeech = new TextToSpeech(application, this);
+        this.textToSpeech.setOnUtteranceProgressListener(utteranceProgressListener);
         this.callbacks = new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -136,14 +179,66 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     }
 
     public void play(CharSequence text) {
-        play(text.toString());
+        play(text.toString(), null, null, null);
     }
 
-    public void play(String text) {
+    /**
+     * Play text and perform action when text starts playing
+     *
+     * Runnable is run on the main thread
+     * @param text
+     * @param onStart
+     */
+    public void playAndOnStart(String text, Runnable onStart) {
+        play(text, onStart, null, null);
+    }
+
+    /**
+     * Play text and perform action when text finishes playing
+     *
+     * Runnable is run on the main thread
+     * @param text
+     * @param onDone
+     */
+    public void playAndOnDone(String text, Runnable onDone) {
+        play(text, null, onDone, null);
+    }
+
+    /**
+     * Play text and perform action when error occurs in playback
+     *
+     * Runnable is run on the main thread
+     * @param text
+     * @param onError
+     */
+    public void playAndOnError(String text, Runnable onError) {
+        play(text, null, null, onError);
+    }
+
+    /**
+     * Play text and perform actions when text starts playing, text finishes playing or
+     * text incurs error playing. Note that {@param onDone} and {@param onError} are mutually
+     * exclusive and only one will be called. All runnables are run on the main thread
+     *
+     * @param text
+     * @param onStart
+     */
+    public void play(String text, Runnable onStart, Runnable onDone, Runnable onError) {
         if(doesNotContainUnwantedPhrase(text)) {
             text = applyRemixes(text);
             if (initialized) {
-                playInternal(text);
+                String utteranceId = playInternal(text);
+                if (utteranceId != UTTERANCE_ID_NONE) {
+                    if (onStart != null) {
+                        onStartRunnables.put(utteranceId, onStart);
+                    }
+                    if (onDone != null) {
+                        onDoneRunnables.put(utteranceId, onDone);
+                    }
+                    if (onError != null) {
+                        onErrorRunnables.put(utteranceId, onError);
+                    }
+                }
             } else {
                 playOnInit = text;
             }
@@ -164,11 +259,19 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         return text;
     }
 
-    private void playInternal(String text) {
-        if (!muted) {
-            Log.d(TAG, "Playing: \""+ text + "\"");
-            textToSpeech.speak(text, queueMode, null);
+    private String playInternal(String text) {
+        if (muted) {
+            return UTTERANCE_ID_NONE;
         }
+        Log.d(TAG, "Playing: \""+ text + "\"");
+        String utteranceId = String.valueOf(SystemClock.currentThreadTimeMillis());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            textToSpeech.speak(text, queueMode, null, utteranceId);
+        } else {
+            textToSpeech.speak(text, queueMode, null);
+            return UTTERANCE_ID_NONE;
+        }
+        return utteranceId;
     }
 
     public void dontPlayIfContains(String text) {
@@ -240,5 +343,24 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
     public void shutdown() {
         textToSpeech.shutdown();
         application.unregisterActivityLifecycleCallbacks(callbacks);
+    }
+
+    /**
+     * Find the runnable for a given utterance id, run it on the main thread and then remove
+     * it from the map
+     * @param utteranceId the id key to use
+     * @param hashMap utteranceIds to runnable map to use
+     * @return whether value was found
+     */
+    private boolean detectAndRun(String utteranceId, HashMap<String, Runnable> hashMap) {
+        if (hashMap.containsKey(utteranceId)) {
+            Runnable runnable = hashMap.get(utteranceId);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(runnable);
+            hashMap.remove(utteranceId);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

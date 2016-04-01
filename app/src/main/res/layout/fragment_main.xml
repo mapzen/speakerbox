@@ -7,46 +7,54 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin">
 
-    <RelativeLayout android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/hint"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/tagline" />
 
-        <EditText
-            android:id="@+id/text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:hint="@string/hint"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="@string/tagline" />
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/speak_status"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/speak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_alignParentLeft="true"
             android:text="@string/speak" />
 
         <Button
-            android:id="@+id/stop"
+            android:id="@+id/speak_w_notify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_toRightOf="@id/speak"
-            android:text="@string/stop" />
+            android:text="@string/speak_w_notify" />
 
-        <ToggleButton
-            android:id="@+id/mute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/speak"
-            android:textOff="@string/mute"
-            android:textOn="@string/mute" />
+    </LinearLayout>
 
-    </RelativeLayout>
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop" />
+
+    <ToggleButton
+        android:id="@+id/mute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/stop"
+        android:textOff="@string/mute"
+        android:textOn="@string/mute" />
+
 
     <RadioGroup
         android:layout_below="@id/speak"
