@@ -265,7 +265,9 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             textToSpeech.speak(text, queueMode, null, utteranceId);
         } else {
-            textToSpeech.speak(text, queueMode, null);
+            final HashMap<String, String> params = new HashMap<>();
+            params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId);
+            textToSpeech.speak(text, queueMode, params);
         }
     }
 

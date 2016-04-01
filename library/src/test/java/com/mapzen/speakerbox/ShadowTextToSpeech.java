@@ -57,6 +57,8 @@ public class ShadowTextToSpeech {
         lastSpokenText = text;
         this.queueMode = queueMode;
         isSpeaking = true;
+        final String utteranceId = params.get(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        notifyProgressListener(utteranceId);
         return TextToSpeech.SUCCESS;
     }
 
@@ -68,13 +70,7 @@ public class ShadowTextToSpeech {
         lastSpokenText = text.toString();
         this.queueMode = queueMode;
         isSpeaking = true;
-        utteranceProgressListener.onStart(utteranceId);
-        if (finishOnSpeak) {
-            utteranceProgressListener.onDone(utteranceId);
-        }
-        if (errorOnSpeak) {
-            utteranceProgressListener.onError(utteranceId);
-        }
+        notifyProgressListener(utteranceId);
         return TextToSpeech.SUCCESS;
     }
 
@@ -125,5 +121,15 @@ public class ShadowTextToSpeech {
 
     public void setErrorOnSpeak(boolean errorOnSpeak) {
         this.errorOnSpeak = errorOnSpeak;
+    }
+
+    private void notifyProgressListener(String utteranceId) {
+        utteranceProgressListener.onStart(utteranceId);
+        if (finishOnSpeak) {
+            utteranceProgressListener.onDone(utteranceId);
+        }
+        if (errorOnSpeak) {
+            utteranceProgressListener.onError(utteranceId);
+        }
     }
 }
