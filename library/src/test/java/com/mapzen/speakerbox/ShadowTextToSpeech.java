@@ -19,7 +19,9 @@ import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
 import java.util.HashMap;
 
@@ -33,6 +35,9 @@ public class ShadowTextToSpeech {
     private boolean stopped = false;
     private boolean isSpeaking = false;
     private int queueMode = -1;
+    private UtteranceProgressListener utteranceProgressListener;
+    private boolean finishOnSpeak = false;
+    private boolean errorOnSpeak = false;
 
     public void __constructor__(Context context, TextToSpeech.OnInitListener listener) {
         this.context = context;
@@ -52,6 +57,26 @@ public class ShadowTextToSpeech {
         lastSpokenText = text;
         this.queueMode = queueMode;
         isSpeaking = true;
+        final String utteranceId = params.get(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        notifyProgressListener(utteranceId);
+        return TextToSpeech.SUCCESS;
+    }
+
+    @Implementation
+    public int speak(final CharSequence text,
+            final int queueMode,
+            final Bundle params,
+            final String utteranceId) {
+        lastSpokenText = text.toString();
+        this.queueMode = queueMode;
+        isSpeaking = true;
+        notifyProgressListener(utteranceId);
+        return TextToSpeech.SUCCESS;
+    }
+
+    @Implementation
+    public int setOnUtteranceProgressListener(UtteranceProgressListener listener) {
+        utteranceProgressListener = listener;
         return TextToSpeech.SUCCESS;
     }
 
@@ -88,5 +113,23 @@ public class ShadowTextToSpeech {
 
     public boolean isSpeaking() {
         return isSpeaking;
+    }
+
+    public void setFinishOnSpeak(boolean finishOnSpeak) {
+        this.finishOnSpeak = finishOnSpeak;
+    }
+
+    public void setErrorOnSpeak(boolean errorOnSpeak) {
+        this.errorOnSpeak = errorOnSpeak;
+    }
+
+    private void notifyProgressListener(String utteranceId) {
+        utteranceProgressListener.onStart(utteranceId);
+        if (finishOnSpeak) {
+            utteranceProgressListener.onDone(utteranceId);
+        }
+        if (errorOnSpeak) {
+            utteranceProgressListener.onError(utteranceId);
+        }
     }
 }

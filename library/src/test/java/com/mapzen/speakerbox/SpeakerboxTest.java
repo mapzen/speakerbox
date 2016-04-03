@@ -242,4 +242,92 @@ public class SpeakerboxTest {
         speakerbox.play("Yo");
         assertThat(shadowTextToSpeech.getQueueMode()).isEqualTo(TextToSpeech.QUEUE_ADD);
     }
+
+    @Test @Config(sdk = 21)
+    public void playAndOnStart_shouldNotifyOnStart_Api21() throws Exception {
+        final OnStartListener onStartListener = new OnStartListener();
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnStart("Yo", new Runnable() {
+            @Override public void run() {
+                onStartListener.onStart = true;
+            }
+        });
+        assertThat(onStartListener.onStart).isTrue();
+    }
+
+    @Test @Config(sdk = 21)
+    public void playAndOnDone_shouldNotifyOnDone_Api21() throws Exception {
+        final OnDoneListener onDoneListener = new OnDoneListener();
+        shadowTextToSpeech.setFinishOnSpeak(true);
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnDone("Yo", new Runnable() {
+            @Override public void run() {
+                onDoneListener.onDone = true;
+            }
+        });
+        assertThat(onDoneListener.onDone).isTrue();
+    }
+
+    @Test @Config(sdk = 21)
+    public void playAndOnError_shouldNotifyOnError_Api21() throws Exception {
+        final OnErrorListener onErrorListener = new OnErrorListener();
+        shadowTextToSpeech.setErrorOnSpeak(true);
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnError("Yo", new Runnable() {
+            @Override public void run() {
+                onErrorListener.onError = true;
+            }
+        });
+        assertThat(onErrorListener.onError).isTrue();
+    }
+
+    @Test @Config(sdk = 19)
+    public void playAndOnStart_shouldNotifyOnStart_Api19() throws Exception {
+        final OnStartListener onStartListener = new OnStartListener();
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnStart("Yo", new Runnable() {
+            @Override public void run() {
+                onStartListener.onStart = true;
+            }
+        });
+        assertThat(onStartListener.onStart).isTrue();
+    }
+
+    @Test @Config(sdk = 19)
+    public void playAndOnDone_shouldNotifyOnDone_Api19() throws Exception {
+        final OnDoneListener onDoneListener = new OnDoneListener();
+        shadowTextToSpeech.setFinishOnSpeak(true);
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnDone("Yo", new Runnable() {
+            @Override public void run() {
+                onDoneListener.onDone = true;
+            }
+        });
+        assertThat(onDoneListener.onDone).isTrue();
+    }
+
+    @Test @Config(sdk = 19)
+    public void playAndOnError_shouldNotifyOnError_Api19() throws Exception {
+        final OnErrorListener onErrorListener = new OnErrorListener();
+        shadowTextToSpeech.setErrorOnSpeak(true);
+        speakerbox.setQueueMode(TextToSpeech.QUEUE_ADD);
+        speakerbox.playAndOnError("Yo", new Runnable() {
+            @Override public void run() {
+                onErrorListener.onError = true;
+            }
+        });
+        assertThat(onErrorListener.onError).isTrue();
+    }
+
+    class OnStartListener {
+        boolean onStart = false;
+    }
+
+    class OnDoneListener {
+        boolean onDone = false;
+    }
+
+    class OnErrorListener {
+        boolean onError = false;
+    }
 }
