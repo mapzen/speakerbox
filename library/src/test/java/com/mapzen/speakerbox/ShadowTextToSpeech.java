@@ -24,6 +24,9 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @Implements(TextToSpeech.class)
@@ -38,6 +41,7 @@ public class ShadowTextToSpeech {
     private UtteranceProgressListener utteranceProgressListener;
     private boolean finishOnSpeak = false;
     private boolean errorOnSpeak = false;
+    private Locale language = null;
 
     public void __constructor__(Context context, TextToSpeech.OnInitListener listener) {
         this.context = context;
@@ -121,6 +125,23 @@ public class ShadowTextToSpeech {
 
     public void setErrorOnSpeak(boolean errorOnSpeak) {
         this.errorOnSpeak = errorOnSpeak;
+    }
+
+    @Implementation
+    public Set<Locale> getAvailableLanguages() {
+        HashSet languages = new HashSet<>();
+        languages.add(Locale.CANADA_FRENCH);
+        languages.add(Locale.FRENCH);
+        return languages;
+    }
+
+    @Implementation
+    public void setLanguage(Locale locale) {
+        language = locale;
+    }
+
+    public Locale getLanguage() {
+        return language;
     }
 
     private void notifyProgressListener(String utteranceId) {
