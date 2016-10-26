@@ -12,14 +12,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
+    Speakerbox speakerbox;
+    LinearLayout languagesLayout;
 
     public MainActivityFragment() {
     }
@@ -29,7 +36,7 @@ public class MainActivityFragment extends Fragment {
             Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         final TextView textView = (EditText) view.findViewById(R.id.text);
-        final Speakerbox speakerbox = new Speakerbox(getActivity().getApplication());
+        speakerbox = new Speakerbox(getActivity().getApplication());
         speakerbox.setActivity(getActivity());
 
         // Test calling play() immediately (before TTS initialization is complete).
@@ -122,6 +129,16 @@ public class MainActivityFragment extends Fragment {
                 speakerbox.abandonAudioFocus();
             }
         });
+
+        final Button getLanguagesBtn = (Button) view.findViewById(R.id.get_languages_btn);
+        getLanguagesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                getAvailableLanguages();
+            }
+        });
+
+        languagesLayout = (LinearLayout) view.findViewById(R.id.available_languages);
+
         return view;
     }
 
@@ -131,5 +148,28 @@ public class MainActivityFragment extends Fragment {
                 speakStatus.setText("");
             }
         }, 1000);
+    }
+
+    private void getAvailableLanguages() {
+        Set<Locale> availableLanguages = speakerbox.getAvailableLanguages();
+
+        languagesLayout.removeAllViews();
+
+        LayoutInflater inflater = LayoutInflater.from(this.getActivity());
+        for (final Locale locale : availableLanguages) {
+
+            View view = inflater.inflate(R.layout.language_row, null, false);
+            TextView textView = (TextView) view.findViewById(R.id.text_view);
+            textView.setText(locale.getDisplayName());
+
+            Button button = (Button) view.findViewById(R.id.btn);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    speakerbox.setLanguage(locale);
+                }
+            });
+
+            languagesLayout.addView(view);
+        }
     }
 }

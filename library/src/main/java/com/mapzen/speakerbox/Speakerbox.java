@@ -15,6 +15,7 @@
  */
 package com.mapzen.speakerbox;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -31,6 +32,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Set;
 
 public class Speakerbox implements TextToSpeech.OnInitListener {
     final static String TAG = Speakerbox.class.getSimpleName();
@@ -332,6 +335,15 @@ public class Speakerbox implements TextToSpeech.OnInitListener {
 
     public void setQueueMode(int queueMode) {
         this.queueMode = queueMode;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public Set<Locale> getAvailableLanguages() {
+        return textToSpeech.getAvailableLanguages();
+    }
+
+    public void setLanguage(Locale locale) {
+        textToSpeech.setLanguage(locale);
     }
 
     /**

@@ -29,6 +29,8 @@ import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.fest.reflect.core.Reflection.field;
@@ -317,6 +319,18 @@ public class SpeakerboxTest {
             }
         });
         assertThat(onErrorListener.onError).isTrue();
+    }
+
+    @Test @Config(sdk = 21)
+    public void getAvailableLanguages_shouldReturnTtsLanguages() throws Exception {
+        Set<Locale> languages = speakerbox.getAvailableLanguages();
+        assertThat(languages).isEqualTo(shadowTextToSpeech.getAvailableLanguages());
+    }
+
+    @Test
+    public void setLanguage_shouldSetTtsLangugae() throws Exception {
+        speakerbox.setLanguage(Locale.JAPANESE);
+        assertThat(shadowTextToSpeech.getLanguage()).isEqualTo(Locale.JAPANESE);
     }
 
     class OnStartListener {
